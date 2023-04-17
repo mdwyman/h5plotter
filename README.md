@@ -1,15 +1,15 @@
-#### h5plotter
+# h5plotter
 Qt tool for view HDF5 files
 
-### Files
+## Files
 
-## h5_plot.py
+### h5_plot.py
 Python code to support parsing HDF5 files, extracting data and plotting image data along with x-,y-profiles
 
-## h5_plotter.ui
+### h5_plotter.ui
 XML file from Qt designer
 
-### Use
+## Use
 Meant to run on APS file system (access to APSshare required).  If not run from APS or an alternate python environment is desired, the 1st line of h5_plot.py will need to be updated.
 
 To run:
