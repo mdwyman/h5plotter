@@ -34,6 +34,9 @@ import h5py
 import os
 import re
 import math
+from pathlib import Path
+
+
 
 #TODO -- can these be made into optional command-line arguments?  OR
 #TODO -- maybe instead, make DEFAULT_H5_DIR the current directory?
@@ -207,8 +210,11 @@ class h5plotter:
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     
+    dirpath = Path(__file__).resolve().parent
     ui_filename = 'h5_plotter.ui' 
-    plotterWindow = h5PlotterWindow(ui_filename)
+    ui_path = dirpath / ui_filename
+
+    plotterWindow = h5PlotterWindow(ui_path)
     plotterWindow.show()
     
     ctrlr = h5plotter(model=getData, view=plotterWindow)
