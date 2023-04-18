@@ -48,12 +48,9 @@ h5_cmap = COLOR_MAPS[0]
 
 def getData(h5file, h5_data_tree):      
 
-    print(h5file)
-    print(h5_data_tree)
     f = h5py.File(h5file, 'r')
     try:
         data = f[h5_data_tree][:]  #Returns 3-d array of (ScanY, DataY, DataX)
-        print(data.shape)
 
     except:
         # Add error dialog about h5_data_tree
@@ -117,8 +114,6 @@ class h5PlotterWindow(QMainWindow):
        
         self.cX_axis.plot(np.sum(data[index,:,:], axis = 0))
         self.cY_axis.plot(np.sum(data[index,:,:], axis = 1), range(data.shape[2]))
-#        self.ax[1].plot(np.sum(data[index,:,:], axis = 0))
-#        self.ax[2].plot(np.sum(data[index,:,:], axis = 1), range(data.shape[2]))
         
         # refresh canvas
         self.canvas.draw()  
@@ -127,9 +122,7 @@ class h5PlotterWindow(QMainWindow):
     def plot_h5(self, data, index=0, cMap = h5_cmap):
         if len(data.shape) == 3:
             h5image = data[index,:,:]
-            print('h5 frame shape: ',h5image.shape)
             im = self.h5_axis.imshow(h5image, cmap = cMap, aspect = 'auto')
-#            im = self.ax[0].imshow(h5image, cmap = cMap)
         else:
             print('Data has unexpected shape: ',data.shape)
             
@@ -145,19 +138,20 @@ class h5plotter:
         self.index = 0
         self.maxIndex = 0
         self.cMap = COLOR_MAPS[0]
-
+        self.h5_data_tree = H5_DATA_TREE
+        
     def plot(self):
-#        self._view.plotter.plot(self.data, index = self.index, title = self.h5Filename, cMap = self.cMap)
         self._view.plot(self.data, index = self.index, cMap = self.cMap)
         self._view.frameNum.setText(str(self.index))
         self.change_title()
+        self.change_status()
         
     def file_open(self):
         fname = QFileDialog.getOpenFileName(self._view, 'Open File',self.h5Dir)
         if fname[0]:
             fname_array = fname[0].split('/')
             self.h5Filename = fname_array[-1]               
-            self.data = self._getData(fname[0], h5_data_tree = H5_DATA_TREE)
+            self.data = self._getData(fname[0], h5_data_tree = self.h5_data_tree)
             
             if self.data is not None:
                 self.index = 0
@@ -167,30 +161,26 @@ class h5plotter:
     def change_title(self):
         self._view.titleBar.setText(self.h5Filename+', Frame: '+str(self.index))
     
+    def change_status(self):
+        self._view.statusbar.showMessage('Filename: '+self.h5Filename+'  |  Data: ' + self.h5_data_tree + '  |  Frame: '+str(self.index))
                 
     def change_color_map(self, i):
         self.cMap = COLOR_MAPS[i]
         self.plot()
-        #self._view.plotter.plot(self.data, index = self.index, title = self.h5Filename, cMap = self.cMap)
-        
+         
     def change_index(self):
         s = self._view.frameNum.text()
         if self.h5Filename != '':
             self.index = max(min(int(s), self.maxIndex), 0)
             self.plot()
-            #self._view.plotter.plot(self.data, index = self.index, title = self.h5Filename, cMap = self.cMap)
-        
+         
     def increment_index(self, direction):
         if direction in {'up','down'}:
             if direction == 'up':
-                print('Going up')
                 self.index = min(self.maxIndex, self.index+1)
             else:
-                print('Going down')
                 self.index = max(0, self.index-1)
-            print(self.index)
             self.plot()
-            #self._view.plotter.plot(self.data, index = self.index, title = self.h5Filename, cMap = self.cMap)             
         else:
             pass
         
