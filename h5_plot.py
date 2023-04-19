@@ -113,7 +113,7 @@ class h5PlotterWindow(QMainWindow):
         self.plot_h5(data, index, cMap)
        
         self.cX_axis.plot(np.sum(data[index,:,:], axis = 0))
-        self.cY_axis.plot(np.sum(data[index,:,:], axis = 1), range(data.shape[2]))
+        self.cY_axis.plot(np.sum(data[index,:,:], axis = 1), range(data.shape[1]))
         
         # refresh canvas
         self.canvas.draw()  
